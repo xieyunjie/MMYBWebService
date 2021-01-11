@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Biz\Controllers\" />
+    <Folder Include="Areas\Biz\Data\" />
+    <Folder Include="Areas\Biz\Models\" />
+    <Folder Include="Areas\Biz\Views\" />
+  </ItemGroup>
+
+</Project>
