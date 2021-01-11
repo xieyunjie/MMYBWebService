@@ -114,13 +114,13 @@ namespace MMYBWebService.Web.Util
                 throw new InterfaceHNException("初始化接口函数失败-newinterfacewithinit！");
             }
 
-            if (start(pint, InterfaceHNConst.LOGIN) <= 0)
+            if (start(pint, InterfaceHNConst.FUN_LOGIN) <= 0)
             {
                 throw new InterfaceHNException("接口登录失败-Start！");
             }
 
-            TryPutData(pint, 1, "login_id", _oper_hospitalid, InterfaceHNConst.LOGIN);
-            TryPutData(pint, 1, "login_password", _oper_hospitalid_pwd, InterfaceHNConst.LOGIN); 
+            TryPutData(pint, 1, "login_id", _oper_hospitalid, InterfaceHNConst.FUN_LOGIN);
+            TryPutData(pint, 1, "login_password", _oper_hospitalid_pwd, InterfaceHNConst.FUN_LOGIN); 
 
             if (run(pint) <= 0)
             {
