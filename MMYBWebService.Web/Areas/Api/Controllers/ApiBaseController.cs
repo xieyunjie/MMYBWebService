@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MMYBWebService.Web.Miscellaneous;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace MMYBWebService.Web.Areas.Api.Controllers
 {
     [Area("Api")]
     [Route("Api/[controller]/[action]")]
-    //[TypeFilter(typeof(ApiActionFilter))]
+    [TypeFilter(typeof(ApiActionFilter))]
     public abstract class ApiBaseController : Controller
     {
         //public IActionResult Index()

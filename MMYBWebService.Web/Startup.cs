@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using MMYBWebService.Web.Miscellaneous;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
@@ -19,11 +21,11 @@ namespace MMYBWebService.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews(
-       //options =>
-       //{
-       //    options.EnableEndpointRouting = false;
-       //    options.Filters.Add<GlobalExceptionFilter>();
-       //}
+       options =>
+       {
+           options.EnableEndpointRouting = false;
+           options.Filters.Add<GlobalExceptionFilter>();
+       }
        ).AddNewtonsoftJson(opt =>
        {
            opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
@@ -32,6 +34,8 @@ namespace MMYBWebService.Web
        });
 
             services.AddHttpContextAccessor();
+            services.AddScoped(typeof(Logger<ApiActionFilter>));
+            services.AddScoped(typeof(Logger<GlobalExceptionFilter>));
             // 这里是多租户的关键！！
             //services.AddAutofacMultitenantRequestServices();
 
@@ -51,11 +55,11 @@ namespace MMYBWebService.Web
 
             app.UseRouting();
 
-            //app.Use(next => context =>
-            //{
-            //    context.Request.EnableBuffering();
-            //    return next(context);
-            //});
+            app.Use(next => context =>
+            {
+                context.Request.EnableBuffering();
+                return next(context);
+            });
 
             app.UseAuthorization();
 
