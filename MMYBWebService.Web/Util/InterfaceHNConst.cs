@@ -18,5 +18,11 @@ namespace MMYBWebService.Web.Util
         public static readonly string DS_FREEZEINFO = "freezeinfo";
         public static readonly string DS_TOTALBIZINFO = "totalbizinfo";
 
+
+        public static readonly string DS_FEEINFO = "feeinfo";
+        public static readonly string DS_BIZINFO = "bizinfo";
+        public static readonly string DS_PAYINFO = "payinfo";
+        public static readonly string DS_DETAILPAY = "detailpay";
+
     }
 }

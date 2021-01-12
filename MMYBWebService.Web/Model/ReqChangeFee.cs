@@ -17,6 +17,9 @@ namespace MMYBWebService.Web.Model
         public string reg_man { get; set; } 
         public string save_flag { get; set; }
         public string bill_no { get; set; }
-        public string trade_no { get; set; } 
+        public string trade_no { get; set; }
+
+        [Miscellaneous.IgnorePutData]
+        public List<ReqChargeFeeDetail> details { get; set; }
     }
 }

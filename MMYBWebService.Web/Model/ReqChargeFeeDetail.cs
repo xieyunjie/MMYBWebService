@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MMYBWebService.Web.Model
 {
-    public class ReqChargeFee_DS
+    public class ReqChargeFeeDetail
     {
         public string medi_item_type { get; set; }
         public string stat_type { get; set; }

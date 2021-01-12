@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MMYBWebService.Web.Model
 {
-    public class ReqDetailPay
+    public class ResDetailPay
     {
         public string hospital_id { get; set; }
         public string label_flag { get; set; }

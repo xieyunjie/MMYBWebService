@@ -28,5 +28,8 @@ namespace MMYBWebService.Web.Model
         public string note { get; set; }
         public string serial_apply { get; set; }
         public string bill_no { get; set; }
+
+        [Miscellaneous.IgnorePutData]
+        public List<ReqChargeFeeDetail> details { get; set; }
     }
 }
