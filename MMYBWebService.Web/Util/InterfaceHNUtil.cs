@@ -104,25 +104,44 @@ namespace MMYBWebService.Web.Util
             long ret = put(pint, row, name, value);
             if (ret <= 0)
             {
-                throw new InterfaceHNException($"添加接口参数失败[{fun}]{row}-{name}-{value}！");
+                StringBuilder msg = new StringBuilder(1024);
+                getmessage(pint, msg);
+
+                throw new InterfaceHNException($"添加接口{pint}获取数据失败！[{fun}]{row}-{name}-{value}！\r\n{msg}");
             }
             return ret;
         }
 
         private static string TryGetData(long pint, string name)
         {
-            StringBuilder stb = new StringBuilder(200);
-            getbyname(pint, name, stb);
+            StringBuilder stb = new StringBuilder(1024);
+            int ret = getbyname(pint, name, stb);
+            if (ret <= 0)
+            {
+                StringBuilder msg = new StringBuilder(1024);
+                getmessage(pint, msg);
+
+                throw new InterfaceHNException($"接口{pint}获取数据失败！{name}! \r\n{msg}");
+            }
             return stb.ToString();
         }
 
         private static long TryStart(long pint, string func)
         {
+            long ret = start(pint, func);
+            if (ret <= 0)
+            {
+                StringBuilder msg = new StringBuilder(1024);
+                getmessage(pint, msg);
+
+                throw new InterfaceHNException($"接口{pint}Start失败！{func}！\r\n{msg}");
+            }
+
             TryPutData(pint, 1, "oper_centerid", _oper_centerid, func);
             TryPutData(pint, 1, "oper_hospitalid", _oper_hospitalid, func);
             TryPutData(pint, 1, "oper_staffid", _oper_staffid, func);
 
-            return pint;
+            return ret;
         }
 
         private static long TryPutData<T>(long pint, int row, T data, string fun = "") where T : class
@@ -161,7 +180,14 @@ namespace MMYBWebService.Web.Util
         {
             List<T> list = new List<T>();
             long ret = setresultset(pint, dsName);
-            if (ret <= 0)
+            if (ret < 0)
+            {
+                StringBuilder msg = new StringBuilder(1024);
+                getmessage(pint, msg);
+
+                throw new InterfaceHNException($"接口{pint}获取数据集失败！{dsName}！\r\n{msg}");
+            }
+            if (ret == 0)
             {
                 return list;
             }
@@ -177,18 +203,34 @@ namespace MMYBWebService.Web.Util
 
             return list;
         }
+        private static long TryRun(long pint, string func)
+        {
+            long ret = run(pint);
+            if (ret <= 0)
+            {
+                StringBuilder msg = new StringBuilder(1024);
+
+                getmessage(pint, msg);
+                throw new InterfaceHNException($"接口执行失败-run！{func}！\r\n{msg.ToString()}");
+            }
+            return ret;
+        }
 
         private static long Login()
         {
             long pint = newinterfacewithinit(_server, _port, _servle);
+            StringBuilder msg = new StringBuilder(1024);
+
             if (pint <= 0)
             {
-                throw new InterfaceHNException("初始化接口函数失败-newinterfacewithinit！");
+                getmessage(pint, msg);
+                throw new InterfaceHNException($"初始化接口{pint}函数失败-newinterfacewithinit！\r\n{msg}");
             }
 
             if (start(pint, InterfaceHNConst.FUN_LOGIN) <= 0)
             {
-                throw new InterfaceHNException("接口登录失败-Start！");
+                getmessage(pint, msg);
+                throw new InterfaceHNException($"接口{pint}登录失败-Start！\r\n{msg}");
             }
 
             TryPutData(pint, 1, "login_id", _oper_hospitalid, InterfaceHNConst.FUN_LOGIN);
@@ -196,15 +238,13 @@ namespace MMYBWebService.Web.Util
 
             if (run(pint) <= 0)
             {
-                StringBuilder msg = new StringBuilder(200);
-
                 getmessage(pint, msg);
-                throw new InterfaceHNException($"接口登录失败-run！\r\n{msg.ToString()}");
+                throw new InterfaceHNException($"接口{pint}登录失败-run！\r\n{msg.ToString()}");
             }
             return pint;
         }
 
-        private static void Logout(long pint)
+        private static void DestoryPint(long pint)
         {
             destoryinterface(pint);
         }
@@ -219,29 +259,12 @@ namespace MMYBWebService.Web.Util
             TryStart(pint, InterfaceHNConst.FUN_BIZC131101);
             TryPutData<ReqPersonInfo>(pint, 1, reqPerson, InterfaceHNConst.FUN_BIZC131101);
 
-            long ret = run(pint);
+            long ret = TryRun(pint, InterfaceHNConst.FUN_BIZC131101);
 
-            if (ret <= 0)
-            {
-                StringBuilder msg = new StringBuilder(200);
+            List<ResPersonInfo> personList = TrySetData<ResPersonInfo>(pint, InterfaceHNConst.DS_PERSONINFO);
 
-                getmessage(pint, msg);
-                throw new InterfaceHNException($"接口执行失败-run！\r\n{ InterfaceHNConst.FUN_BIZC131101}\r\n{msg.ToString()}");
-            }
-
-            ret = setresultset(pint, InterfaceHNConst.DS_PERSONINFO);
             // 多个PersonInfo，只返回PersonInfo数据
-            if (ret > 1)
-            {
-                ResPersonInfo personInfo = TrySetData<ResPersonInfo>(pint);
-                ds.PersonInfoList.Add(personInfo);
-                for (int i = 0; i < ret - 1; i++)
-                {
-                    nextrow(pint);
-                    ds.PersonInfoList.Add(TrySetData<ResPersonInfo>(pint));
-                }
-            }
-            else if (ret == 1)// 一个PersonInfo
+            if (personList.Count == 1)
             {
                 ResPersonInfo personInfo = TrySetData<ResPersonInfo>(pint);
                 ds.PersonInfoList.Add(personInfo);
@@ -261,8 +284,15 @@ namespace MMYBWebService.Web.Util
                 List<ResTotalBizInfo> totalbizList = TrySetData<ResTotalBizInfo>(pint, InterfaceHNConst.DS_TOTALBIZINFO);
                 ds.TotalBizInfoList = totalbizList;
             }
+            //else if (ret <= -1)
+            //{
+            //    StringBuilder msg = new StringBuilder(1024);
 
-            Logout(pint);
+            //    getmessage(pint, msg);
+            //    throw new InterfaceHNException($"接口执行失败-run！{ InterfaceHNConst.FUN_BIZC131101}！\r\n{msg.ToString()}");
+            //}
+
+            DestoryPint(pint);
 
             return ds;
 
@@ -276,8 +306,8 @@ namespace MMYBWebService.Web.Util
             long pint = Login();
 
             TryStart(pint, InterfaceHNConst.FUN_BIZC131104);
-            TryPutData<ReqChargeFee>(pint, 1, reqChargeFee, InterfaceHNConst.FUN_BIZC131104);
 
+            TryPutData<ReqChargeFee>(pint, 1, reqChargeFee, InterfaceHNConst.FUN_BIZC131104);
             long ret = setresultset(pint, InterfaceHNConst.DS_FEEINFO);
             int row = 1;
             foreach (var item in reqChargeFee.details)
@@ -286,27 +316,18 @@ namespace MMYBWebService.Web.Util
                 row++;
             }
 
-            ret = run(pint);
+            ret = TryRun(pint, InterfaceHNConst.FUN_BIZC131104);
 
-            if (ret <= 0)
-            {
-                StringBuilder msg = new StringBuilder(200);
+            List<ResBizInfo> bizInfoList = TrySetData<ResBizInfo>(pint, InterfaceHNConst.DS_BIZINFO);
+            ds.BizInfoList = bizInfoList;
 
-                getmessage(pint, msg);
-                throw new InterfaceHNException($"接口执行失败-run！\r\n{ InterfaceHNConst.FUN_BIZC131104}\r\n{msg.ToString()}");
-            }
-            else
-            {
-                List<ResBizInfo> bizInfoList = TrySetData<ResBizInfo>(pint, InterfaceHNConst.DS_BIZINFO);
-                ds.BizInfoList = bizInfoList;
+            List<ResPayInfo> payInfoList = TrySetData<ResPayInfo>(pint, InterfaceHNConst.DS_PAYINFO);
+            ds.PayInfoList = payInfoList;
 
-                List<ResPayInfo> payInfoList = TrySetData<ResPayInfo>(pint, InterfaceHNConst.DS_PAYINFO);
-                ds.PayInfoList = payInfoList;
+            List<ResDetailPay> detailPayList = TrySetData<ResDetailPay>(pint, InterfaceHNConst.DS_DETAILPAY);
+            ds.DetailPayList = detailPayList;
 
-                List<ResDetailPay> detailPayList = TrySetData<ResDetailPay>(pint, InterfaceHNConst.DS_DETAILPAY);
-                ds.DetailPayList = detailPayList;
-            }
-
+            DestoryPint(pint);
             return ds;
         }
 
@@ -327,27 +348,18 @@ namespace MMYBWebService.Web.Util
                 row++;
             }
 
-            ret = run(pint);
+            ret = TryRun(pint, InterfaceHNConst.FUN_BIZC131104);
 
-            if (ret <= 0)
-            {
-                StringBuilder msg = new StringBuilder(200);
+            List<ResBizInfo> bizInfoList = TrySetData<ResBizInfo>(pint, InterfaceHNConst.DS_BIZINFO);
+            ds.BizInfoList = bizInfoList;
 
-                getmessage(pint, msg);
-                throw new InterfaceHNException($"接口执行失败-run！\r\n{ InterfaceHNConst.FUN_BIZC131104}\r\n{msg.ToString()}");
-            }
-            else
-            {
-                List<ResBizInfo> bizInfoList = TrySetData<ResBizInfo>(pint, InterfaceHNConst.DS_BIZINFO);
-                ds.BizInfoList = bizInfoList;
+            List<ResPayInfo> payInfoList = TrySetData<ResPayInfo>(pint, InterfaceHNConst.DS_PAYINFO);
+            ds.PayInfoList = payInfoList;
 
-                List<ResPayInfo> payInfoList = TrySetData<ResPayInfo>(pint, InterfaceHNConst.DS_PAYINFO);
-                ds.PayInfoList = payInfoList;
+            List<ResDetailPay> detailPayList = TrySetData<ResDetailPay>(pint, InterfaceHNConst.DS_DETAILPAY);
+            ds.DetailPayList = detailPayList;
 
-                List<ResDetailPay> detailPayList = TrySetData<ResDetailPay>(pint, InterfaceHNConst.DS_DETAILPAY);
-                ds.DetailPayList = detailPayList;
-            }
-
+            DestoryPint(pint);
             return ds;
         }
 

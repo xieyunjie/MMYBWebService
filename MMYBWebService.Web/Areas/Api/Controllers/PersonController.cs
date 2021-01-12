@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MMYBWebService.Web.Model;
+using MMYBWebService.Web.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +15,14 @@ namespace MMYBWebService.Web.Areas.Api.Controllers
             return View();
         }
 
-        public IActionResult GetPersionInfo()
+        public IActionResult GetPersionInfo([FromBody] ReqPersonInfo req)
         {
-            return RetData.Success();
+            ResPersonInfo_DS data = InterfaceHNUtil.GetPersonInfo(req);
+
+            return RetData.SuccessData(data);
         }
 
-                public IActionResult TestInfo()
+        public IActionResult TestInfo()
         {
             return RetData.Success();
         }
