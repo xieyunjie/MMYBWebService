@@ -269,7 +269,6 @@ namespace MMYBWebService.Web.Util
 
         }
 
-
         public static ResChargeFee_DS ChargeFee(ReqChargeFee reqChargeFee)
         {
             ResChargeFee_DS ds = new ResChargeFee_DS();
