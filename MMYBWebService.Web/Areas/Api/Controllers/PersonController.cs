@@ -26,6 +26,10 @@ namespace MMYBWebService.Web.Areas.Api.Controllers
         {
             return RetData.Success();
         }
+        public IActionResult TestExceptionInfo()
+        {
+            throw new Exception("系统错误！");
+        }
 
     }
 }

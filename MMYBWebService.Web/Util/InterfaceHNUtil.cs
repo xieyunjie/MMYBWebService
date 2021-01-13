@@ -12,27 +12,29 @@ namespace MMYBWebService.Web.Util
     public class InterfaceHNUtil
     {
 
-        private static long _port;
-        private static string _server;
-        private static string _servle;
+        public static InterfaceHNSetting config { get; set; }
 
-        private static string _oper_centerid;
-        private static string _oper_hospitalid;
-        private static string _oper_hospitalid_pwd;
-        private static string _oper_staffid;
-        private static string _oper_staffid_pwd;
+        //private static long _port;
+        //private static string _server;
+        //private static string _servle;
+
+        //private static string _oper_centerid;
+        //private static string _oper_hospitalid;
+        //private static string _oper_hospitalid_pwd;
+        //private static string _oper_staffid;
+        //private static string _oper_staffid_pwd;
 
 
         static InterfaceHNUtil()
         {
-            _port = 8080;
-            _server = "192.168.169.54";
-            _servle = "sicp3_test/ProcessAll";
+            //_port = 8080;
+            //_server = "192.168.169.54";
+            //_servle = "sicp3_test/ProcessAll";
 
-            _oper_centerid = "440999";
-            _oper_hospitalid = "440999024";
-            _oper_staffid = "440999024";
-            _oper_staffid_pwd = "440999024";
+            //_oper_centerid = "440999";
+            //_oper_hospitalid = "440999024";
+            //_oper_staffid = "440999024";
+            //_oper_staffid_pwd = "440999024";
         }
 
         #region DLLImport
@@ -137,9 +139,9 @@ namespace MMYBWebService.Web.Util
                 throw new InterfaceHNException($"接口{pint}Start失败！{func}！\r\n{msg}");
             }
 
-            TryPutData(pint, 1, "oper_centerid", _oper_centerid, func);
-            TryPutData(pint, 1, "oper_hospitalid", _oper_hospitalid, func);
-            TryPutData(pint, 1, "oper_staffid", _oper_staffid, func);
+            TryPutData(pint, 1, "oper_centerid", config.CenterId, func);
+            TryPutData(pint, 1, "oper_hospitalid", config.HospitalId, func);
+            TryPutData(pint, 1, "oper_staffid", config.StaffId, func);
 
             return ret;
         }
@@ -218,7 +220,7 @@ namespace MMYBWebService.Web.Util
 
         private static long Login()
         {
-            long pint = newinterfacewithinit(_server, _port, _servle);
+            long pint = newinterfacewithinit(config.Server, config.Port, config.Servle);
             StringBuilder msg = new StringBuilder(1024);
 
             if (pint <= 0)
@@ -233,8 +235,8 @@ namespace MMYBWebService.Web.Util
                 throw new InterfaceHNException($"接口{pint}登录失败-Start！\r\n{msg}");
             }
 
-            TryPutData(pint, 1, "login_id", _oper_hospitalid, InterfaceHNConst.FUN_LOGIN);
-            TryPutData(pint, 1, "login_password", _oper_hospitalid_pwd, InterfaceHNConst.FUN_LOGIN);
+            TryPutData(pint, 1, "login_id", config.HospitalId, InterfaceHNConst.FUN_LOGIN);
+            TryPutData(pint, 1, "login_password", config.HospitalId_pwd, InterfaceHNConst.FUN_LOGIN);
 
             if (run(pint) <= 0)
             {
