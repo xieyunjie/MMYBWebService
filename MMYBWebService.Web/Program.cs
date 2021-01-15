@@ -14,7 +14,7 @@ namespace MMYBWebService.Web
     {
         public static void Main(string[] args)
         {
-            var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            //var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             CreateHostBuilder(args).Build().Run();
             NLog.LogManager.Shutdown();
         }

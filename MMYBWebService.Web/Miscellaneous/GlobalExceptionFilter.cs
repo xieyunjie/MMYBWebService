@@ -24,7 +24,8 @@ namespace MMYBWebService.Web.Miscellaneous
         {
             if (!context.ExceptionHandled)
             {
-                logger.LogError(context.HttpContext.Request.GetDisplayUrl() + " 执行异常...\r\n" + context.Exception.StackTrace);
+                logger.LogError(context.HttpContext.Request.GetDisplayUrl() + " 执行异常..." + context.Exception.Message);
+                logger.LogError(context.Exception.StackTrace);
 
                 if (_env.IsDevelopment() || _env.IsStaging())
                 {

@@ -33,7 +33,8 @@ namespace MMYBWebService.Web.Miscellaneous
 
                 context.HttpContext.Request.Body.Position = 0;
                 string bodyStr = string.Empty;
-                using (var reader = new StreamReader(context.HttpContext.Request.Body, Encoding.UTF8, true, 1024, true))
+                //using (var reader = new StreamReader(context.HttpContext.Request.Body, Encoding.UTF8, true, 1024, true))
+                using (var reader = new StreamReader(context.HttpContext.Request.Body, Encoding.UTF8))
                 {
                     var bodyRead = reader.ReadToEndAsync();
                     bodyStr = bodyRead.Result;  //把body赋值给bodyStr
