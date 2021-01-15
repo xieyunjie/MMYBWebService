@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MMYBWebService.Web.Util
 {
-    public class InterfaceHNSetting
+    public record InterfaceHNSetting
     {
         public long Port { get; init; }
         public string Server { get; init; }
