@@ -323,7 +323,7 @@ namespace MMYBWebService.Web.Util
             TryPutData<ReqChargeFee>(pint, 1, reqChargeFee, InterfaceHNConst.FUN_BIZC131104);
             long ret = setresultset(pint, InterfaceHNConst.DS_FEEINFO);
             int row = 1;
-            foreach (var item in reqChargeFee.details)
+            foreach (var item in reqChargeFee.feeinfo)
             {
                 TryPutData<ReqChargeFeeDetail>(pint, row, item, InterfaceHNConst.FUN_BIZC131104);
                 row++;
@@ -355,7 +355,7 @@ namespace MMYBWebService.Web.Util
 
             long ret = setresultset(pint, InterfaceHNConst.DS_FEEINFO);
             int row = 1;
-            foreach (var item in reqChangeFee.details)
+            foreach (var item in reqChangeFee.feeinfo)
             {
                 TryPutData<ReqChargeFeeDetail>(pint, row, item, InterfaceHNConst.FUN_BIZC131104);
                 row++;

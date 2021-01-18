@@ -30,6 +30,6 @@ namespace MMYBWebService.Web.Model
         public string bill_no { get; set; }
 
         [Miscellaneous.IgnorePutData]
-        public List<ReqChargeFeeDetail> details { get; set; }
+        public List<ReqChargeFeeDetail> feeinfo { get; set; }
     }
 }

@@ -20,6 +20,6 @@ namespace MMYBWebService.Web.Model
         public string trade_no { get; set; }
 
         [Miscellaneous.IgnorePutData]
-        public List<ReqChargeFeeDetail> details { get; set; }
+        public List<ReqChargeFeeDetail> feeinfo { get; set; }
     }
 }

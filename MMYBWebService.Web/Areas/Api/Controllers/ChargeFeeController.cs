@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MMYBWebService.Web.Model;
+using MMYBWebService.Web.Model.Validator;
 using MMYBWebService.Web.Util;
 using System;
 using System.Collections.Generic;
@@ -15,9 +16,11 @@ namespace MMYBWebService.Web.Areas.Api.Controllers
         //    return View();
         //}
         [HttpPost]
-
         public IActionResult Charge([FromBody] ReqChargeFee req)
         {
+            var validator = new ReqChargeFeeValidator();
+            string validInfo = CommonUtil.Validate(req, validator);
+
             ResChargeFee_DS data = InterfaceHNUtil.ChargeFee(req);
 
             return RetData.SuccessData(data);
@@ -26,6 +29,9 @@ namespace MMYBWebService.Web.Areas.Api.Controllers
         [HttpPost]
         public IActionResult Change([FromBody] ReqChangeFee req)
         {
+            var validator = new ReqChangeFeeValidator();
+            string validInfo = CommonUtil.Validate(req, validator);
+
             ResChargeFee_DS data = InterfaceHNUtil.ChangeFee(req);
 
             return RetData.SuccessData(data);

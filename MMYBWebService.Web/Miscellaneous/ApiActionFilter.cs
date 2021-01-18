@@ -16,6 +16,7 @@ namespace MMYBWebService.Web.Miscellaneous
     public class ApiActionFilter : ActionFilterAttribute
     {
         private readonly Logger<ApiActionFilter> logger;
+        private string bodyStr = "";
 
         public ApiActionFilter(Logger<ApiActionFilter> log)
         {
@@ -32,7 +33,7 @@ namespace MMYBWebService.Web.Miscellaneous
                 var controllerActionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
 
                 context.HttpContext.Request.Body.Position = 0;
-                string bodyStr = string.Empty;
+                //string bodyStr = string.Empty;
                 //using (var reader = new StreamReader(context.HttpContext.Request.Body, Encoding.UTF8, true, 1024, true))
                 using (var reader = new StreamReader(context.HttpContext.Request.Body, Encoding.UTF8))
                 {
@@ -76,6 +77,11 @@ namespace MMYBWebService.Web.Miscellaneous
             {
                 var r = context.Result as OkObjectResult;
                 logger.LogInformation($"Output: {Newtonsoft.Json.JsonConvert.SerializeObject(r.Value)}");
+            }
+            else if (context.Exception!=null)
+            { 
+                logger.LogError(" ApiActionFilter 访问异常：" + bodyStr); 
+                logger.LogError(" ApiActionFilter 访问异常：" + context.Exception.StackTrace);
             }
             logger.LogInformation(" ApiActionFilter 执行结束...");
         }
