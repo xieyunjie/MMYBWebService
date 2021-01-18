@@ -9,4 +9,9 @@ namespace MMYBWebService.Web.Miscellaneous
     public class IgnorePutDataAttribute : Attribute
     {
     }
+
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
+    public class IgnoreSetDataAttribute : Attribute
+    {
+    }
 }

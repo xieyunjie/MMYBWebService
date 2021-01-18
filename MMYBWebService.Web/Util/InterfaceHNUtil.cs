@@ -37,6 +37,7 @@ namespace MMYBWebService.Web.Util
             //_oper_staffid_pwd = "440999024";
         }
 
+
         #region DLLImport
 
         [DllImport("InterfaceHN.dll")]
@@ -101,26 +102,31 @@ namespace MMYBWebService.Web.Util
 
         #region 包装方法
 
+        private static StringBuilder CreateOutParam (int size = 1024)
+        {
+            return new StringBuilder(size);
+        }
+
         private static long TryPutData(long pint, int row, string name, string value, string fun = "")
         {
             long ret = put(pint, row, name, value);
             if (ret <= 0)
             {
-                StringBuilder msg = new StringBuilder(1024);
+                StringBuilder msg = CreateOutParam();
                 getmessage(pint, msg);
 
-                throw new InterfaceHNException($"添加接口{pint}获取数据失败！[{fun}]{row}-{name}-{value}！\r\n{msg}");
+                throw new InterfaceHNException($"接口{pint}添加参数失败！[{fun}]{row}-{name}-{value}！\r\n{msg}");
             }
             return ret;
         }
 
         private static string TryGetData(long pint, string name)
         {
-            StringBuilder stb = new StringBuilder(1024);
+            StringBuilder stb = CreateOutParam();
             int ret = getbyname(pint, name, stb);
             if (ret <= 0)
             {
-                StringBuilder msg = new StringBuilder(1024);
+                StringBuilder msg = CreateOutParam();
                 getmessage(pint, msg);
 
                 throw new InterfaceHNException($"接口{pint}获取数据失败！{name}! \r\n{msg}");
@@ -133,7 +139,7 @@ namespace MMYBWebService.Web.Util
             long ret = start(pint, func);
             if (ret <= 0)
             {
-                StringBuilder msg = new StringBuilder(1024);
+                StringBuilder msg = CreateOutParam();
                 getmessage(pint, msg);
 
                 throw new InterfaceHNException($"接口{pint}Start失败！{func}！\r\n{msg}");
@@ -169,6 +175,10 @@ namespace MMYBWebService.Web.Util
             string value = "";
             foreach (var p in props)
             {
+                if (p.CustomAttributes.ToList().Exists(x=>x.AttributeType == typeof(IgnoreSetDataAttribute)))
+                {
+                    continue;
+                }
                 value = TryGetData(pint, p.Name);
 
                 p.SetValue(data, value);
@@ -184,10 +194,10 @@ namespace MMYBWebService.Web.Util
             long ret = setresultset(pint, dsName);
             if (ret < 0)
             {
-                StringBuilder msg = new StringBuilder(1024);
+                StringBuilder msg = CreateOutParam();
                 getmessage(pint, msg);
 
-                throw new InterfaceHNException($"接口{pint}获取数据集失败！{dsName}！\r\n{msg}");
+                throw new InterfaceHNException($"接口{pint}setresultset获取数据集失败！{dsName}！\r\n{msg}");
             }
             if (ret == 0)
             {
@@ -205,15 +215,16 @@ namespace MMYBWebService.Web.Util
 
             return list;
         }
+
         private static long TryRun(long pint, string func)
         {
             long ret = run(pint);
             if (ret <= 0)
             {
-                StringBuilder msg = new StringBuilder(1024);
+                StringBuilder msg = CreateOutParam();
 
                 getmessage(pint, msg);
-                throw new InterfaceHNException($"接口执行失败-run！{func}！\r\n{msg.ToString()}");
+                throw new InterfaceHNException($"接口{pint}Run执行失败！{func}！\r\n{msg.ToString()}");
             }
             return ret;
         }
@@ -221,18 +232,18 @@ namespace MMYBWebService.Web.Util
         private static long Login()
         {
             long pint = newinterfacewithinit(config.Server, config.Port, config.Servle);
-            StringBuilder msg = new StringBuilder(1024);
+            StringBuilder msg = CreateOutParam();
 
             if (pint <= 0)
             {
                 getmessage(pint, msg);
-                throw new InterfaceHNException($"初始化接口{pint}函数失败-newinterfacewithinit！\r\n{msg}");
+                throw new InterfaceHNException($"接口{pint}newinterfacewithinit初始化失败！\r\n{msg}");
             }
 
             if (start(pint, InterfaceHNConst.FUN_LOGIN) <= 0)
             {
                 getmessage(pint, msg);
-                throw new InterfaceHNException($"接口{pint}登录失败-Start！\r\n{msg}");
+                throw new InterfaceHNException($"接口{pint}Start登录失败！\r\n{msg}");
             }
 
             TryPutData(pint, 1, "login_id", config.HospitalId, InterfaceHNConst.FUN_LOGIN);
@@ -241,7 +252,7 @@ namespace MMYBWebService.Web.Util
             if (run(pint) <= 0)
             {
                 getmessage(pint, msg);
-                throw new InterfaceHNException($"接口{pint}登录失败-run！\r\n{msg.ToString()}");
+                throw new InterfaceHNException($"接口{pint}Run登录失败！\r\n{msg.ToString()}");
             }
             return pint;
         }

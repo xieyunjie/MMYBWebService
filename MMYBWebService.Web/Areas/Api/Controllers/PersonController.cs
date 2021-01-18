@@ -15,6 +15,7 @@ namespace MMYBWebService.Web.Areas.Api.Controllers
             return View();
         }
 
+        [HttpPost]
         public IActionResult GetPersionInfo([FromBody] ReqPersonInfo req)
         {
             ResPersonInfo_DS data = InterfaceHNUtil.GetPersonInfo(req);
@@ -22,10 +23,12 @@ namespace MMYBWebService.Web.Areas.Api.Controllers
             return RetData.SuccessData(data);
         }
 
+        [HttpPost]
         public IActionResult TestInfo()
         {
             return RetData.Success();
         }
+        [HttpPost]
         public IActionResult TestExceptionInfo()
         {
             throw new Exception("系统错误！");

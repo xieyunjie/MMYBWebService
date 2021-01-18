@@ -14,6 +14,7 @@ namespace MMYBWebService.Web.Areas.Api.Controllers
         //{
         //    return View();
         //}
+        [HttpPost]
 
         public IActionResult Charge([FromBody] ReqChargeFee req)
         {
@@ -22,6 +23,7 @@ namespace MMYBWebService.Web.Areas.Api.Controllers
             return RetData.SuccessData(data);
         }
 
+        [HttpPost]
         public IActionResult Change([FromBody] ReqChangeFee req)
         {
             ResChargeFee_DS data = InterfaceHNUtil.ChangeFee(req);
