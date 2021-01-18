@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MMYBWebService.Web.Model;
+using MMYBWebService.Web.Model.Validator;
 using MMYBWebService.Web.Util;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,9 @@ namespace MMYBWebService.Web.Areas.Api.Controllers
         [HttpPost]
         public IActionResult GetPersionInfo([FromBody] ReqPersonInfo req)
         {
+            var validator = new ReqPersonInfoValidator();
+            string validInfo = CommonUtil.Validate(req, validator);  
+
             ResPersonInfo_DS data = InterfaceHNUtil.GetPersonInfo(req);
 
             return RetData.SuccessData(data);
