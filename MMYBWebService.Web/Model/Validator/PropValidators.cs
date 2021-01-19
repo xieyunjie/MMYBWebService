@@ -13,6 +13,7 @@ namespace MMYBWebService.Web.Model.Validator
         {
             this._format = format;
         }
+
         protected override bool IsValid(PropertyValidatorContext context)
         {
             bool bln = DateTime.TryParseExact(context.PropertyValue as string, _format, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AdjustToUniversal, out DateTime dt);
@@ -25,7 +26,6 @@ namespace MMYBWebService.Web.Model.Validator
         }
 
         protected override string GetDefaultMessageTemplate() => "{PropertyName}与时间格式{Format}不相符。";
-
 
         public static DateTimeFormatValidator LongDateTimeValidator()
         {

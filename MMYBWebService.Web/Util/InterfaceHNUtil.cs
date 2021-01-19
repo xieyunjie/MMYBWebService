@@ -102,9 +102,16 @@ namespace MMYBWebService.Web.Util
 
         #region 包装方法
 
-        private static StringBuilder CreateOutParam (int size = 1024)
+        private static StringBuilder CreateOutParam(int size = 1024)
         {
             return new StringBuilder(size);
+        }
+
+        private static string GetErrorMessage(long pint)
+        {
+            StringBuilder msg = CreateOutParam();
+            getmessage(pint, msg);
+            return msg.ToString();
         }
 
         private static long TryPutData(long pint, int row, string name, string value, string fun = "")
@@ -112,8 +119,7 @@ namespace MMYBWebService.Web.Util
             long ret = put(pint, row, name, value);
             if (ret <= 0)
             {
-                StringBuilder msg = CreateOutParam();
-                getmessage(pint, msg);
+                string msg = GetErrorMessage(pint);
 
                 throw new InterfaceHNException($"接口{pint}添加参数失败！[{fun}]{row}-{name}-{value}！\r\n{msg}");
             }
@@ -126,8 +132,7 @@ namespace MMYBWebService.Web.Util
             int ret = getbyname(pint, name, stb);
             if (ret <= 0)
             {
-                StringBuilder msg = CreateOutParam();
-                getmessage(pint, msg);
+                string msg = GetErrorMessage(pint);
 
                 throw new InterfaceHNException($"接口{pint}获取数据失败！{name}! \r\n{msg}");
             }
@@ -139,8 +144,7 @@ namespace MMYBWebService.Web.Util
             long ret = start(pint, func);
             if (ret <= 0)
             {
-                StringBuilder msg = CreateOutParam();
-                getmessage(pint, msg);
+                string msg = GetErrorMessage(pint);
 
                 throw new InterfaceHNException($"接口{pint}Start失败！{func}！\r\n{msg}");
             }
@@ -161,6 +165,11 @@ namespace MMYBWebService.Web.Util
                 {
                     continue;
                 }
+                // 为null就不传入值
+                if (p.GetValue(data) == null)
+                {
+                    continue;
+                }
 
                 TryPutData(pint, row, p.Name, p.GetValue(data).ToString(), fun);
             }
@@ -175,7 +184,7 @@ namespace MMYBWebService.Web.Util
             string value = "";
             foreach (var p in props)
             {
-                if (p.CustomAttributes.ToList().Exists(x=>x.AttributeType == typeof(IgnoreSetDataAttribute)))
+                if (p.CustomAttributes.ToList().Exists(x => x.AttributeType == typeof(IgnoreSetDataAttribute)))
                 {
                     continue;
                 }
@@ -194,8 +203,7 @@ namespace MMYBWebService.Web.Util
             long ret = setresultset(pint, dsName);
             if (ret < 0)
             {
-                StringBuilder msg = CreateOutParam();
-                getmessage(pint, msg);
+                string msg = GetErrorMessage(pint);
 
                 throw new InterfaceHNException($"接口{pint}setresultset获取数据集失败！{dsName}！\r\n{msg}");
             }
@@ -221,10 +229,9 @@ namespace MMYBWebService.Web.Util
             long ret = run(pint);
             if (ret <= 0)
             {
-                StringBuilder msg = CreateOutParam();
+                string msg = GetErrorMessage(pint);
 
-                getmessage(pint, msg);
-                throw new InterfaceHNException($"接口{pint}Run执行失败！{func}！\r\n{msg.ToString()}");
+                throw new InterfaceHNException($"接口{pint}Run执行失败！{func}！\r\n{msg}");
             }
             return ret;
         }
@@ -232,17 +239,17 @@ namespace MMYBWebService.Web.Util
         private static long Login()
         {
             long pint = newinterfacewithinit(config.Server, config.Port, config.Servle);
-            StringBuilder msg = CreateOutParam();
+            string msg = "";
 
             if (pint <= 0)
             {
-                getmessage(pint, msg);
+                msg = GetErrorMessage(pint);
                 throw new InterfaceHNException($"接口{pint}newinterfacewithinit初始化失败！\r\n{msg}");
             }
 
             if (start(pint, InterfaceHNConst.FUN_LOGIN) <= 0)
             {
-                getmessage(pint, msg);
+                msg = GetErrorMessage(pint);
                 throw new InterfaceHNException($"接口{pint}Start登录失败！\r\n{msg}");
             }
 
@@ -251,7 +258,7 @@ namespace MMYBWebService.Web.Util
 
             if (run(pint) <= 0)
             {
-                getmessage(pint, msg);
+                msg = GetErrorMessage(pint);
                 throw new InterfaceHNException($"接口{pint}Run登录失败！\r\n{msg.ToString()}");
             }
             return pint;
@@ -264,6 +271,13 @@ namespace MMYBWebService.Web.Util
 
         #endregion
 
+        #region 主要方法
+
+        /// <summary>
+        /// 获取人员信息
+        /// </summary>
+        /// <param name="reqPerson"></param>
+        /// <returns></returns>
         public static ResPersonInfo_DS GetPersonInfo(ReqPersonInfo reqPerson)
         {
             ResPersonInfo_DS ds = new ResPersonInfo_DS();
@@ -312,6 +326,11 @@ namespace MMYBWebService.Web.Util
 
         }
 
+        /// <summary>
+        /// 缴费
+        /// </summary>
+        /// <param name="reqChargeFee"></param>
+        /// <returns></returns>
         public static ResChargeFee_DS ChargeFee(ReqChargeFee reqChargeFee)
         {
             ResChargeFee_DS ds = new ResChargeFee_DS();
@@ -344,6 +363,11 @@ namespace MMYBWebService.Web.Util
             return ds;
         }
 
+        /// <summary>
+        /// 改费
+        /// </summary>
+        /// <param name="reqChangeFee"></param>
+        /// <returns></returns>
         public static ResChargeFee_DS ChangeFee(ReqChangeFee reqChangeFee)
         {
             ResChargeFee_DS ds = new ResChargeFee_DS();
@@ -375,6 +399,8 @@ namespace MMYBWebService.Web.Util
             DestoryPint(pint);
             return ds;
         }
+
+        #endregion
 
     }
 }
