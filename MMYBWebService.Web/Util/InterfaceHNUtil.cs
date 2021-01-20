@@ -110,8 +110,8 @@ namespace MMYBWebService.Web.Util
 
         private static string GetErrorMessage(int pint)
         {
-            StringBuilder msg = CreateOutParam(10240);
-            getmessage(pint, msg);
+            StringBuilder msg = CreateOutParam();
+            getexception(pint, msg);
             return msg.ToString();
         }
 
@@ -241,6 +241,7 @@ namespace MMYBWebService.Web.Util
         {
             int pint = newinterface();
             int ret = init(pint,config.Server, config.Port, config.Servle);
+            ret = setdebug(pint, 1, "d:\\");
             string msg = "";
 
             if (pint <= 0)
