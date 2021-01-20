@@ -25,6 +25,18 @@ namespace MMYBWebService.Web.Areas.Api.Controllers
         }
 
         [HttpPost]
+        public IActionResult TestComInfo()
+        {
+            Type t = Type.GetTypeFromCLSID(new Guid("F0E70DF1-66B0-40c2-8210-40CEBBB8A6DA"));
+
+            object obj = System.Activator.CreateInstance(t);
+
+            object r = t.InvokeMember("test", System.Reflection.BindingFlags.InvokeMethod, null, obj, null);
+
+            return RetData.SuccessData(r);
+        }
+
+        [HttpPost]
         public IActionResult GetModelJson(string modelClass)
         {
             try

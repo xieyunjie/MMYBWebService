@@ -46,57 +46,57 @@ namespace MMYBWebService.Web.Util
         private static extern int newinterface();
 
 
-        [DllImport(DLL_NAME, EntryPoint = "init", CharSet = CharSet.Ansi)]
+        [DllImport(DLL_NAME, EntryPoint = "init", CharSet = CharSet.Ansi, SetLastError = true)]
         private static extern int init(int pint, string addr, int port, string servlet);
 
-        [DllImport(DLL_NAME, EntryPoint = "newinterfacewithinit", CharSet = CharSet.Ansi)]
+        [DllImport(DLL_NAME, EntryPoint = "newinterfacewithinit", CharSet = CharSet.Ansi, SetLastError = true)]
         private static extern int newinterfacewithinit(string addr, int port, string servlet);
 
-        [DllImport(DLL_NAME, EntryPoint = "start", CharSet = CharSet.Ansi)]
+        [DllImport(DLL_NAME, EntryPoint = "start", CharSet = CharSet.Ansi, SetLastError = true)]
         private static extern int start(int pint, string id);
 
-        [DllImport(DLL_NAME, EntryPoint = "put", CharSet = CharSet.Ansi)]
+        [DllImport(DLL_NAME, EntryPoint = "put", CharSet = CharSet.Ansi, SetLastError = true)]
         private static extern int put(int pint, int row, string pname, string pvalue);
 
-        [DllImport(DLL_NAME, EntryPoint = "run", CharSet = CharSet.Ansi)]
+        [DllImport(DLL_NAME, EntryPoint = "run", CharSet = CharSet.Ansi, SetLastError = true)]
         private static extern int run(int pint);
 
-        [DllImport(DLL_NAME, EntryPoint = "setdebug", CharSet = CharSet.Ansi)]
+        [DllImport(DLL_NAME, EntryPoint = "setdebug", CharSet = CharSet.Ansi, SetLastError = true)]
         private static extern int setdebug(int pint, int flag, string in_direct);
 
-        [DllImport(DLL_NAME, EntryPoint = "getbyname", CharSet = CharSet.Ansi)]
+        [DllImport(DLL_NAME, EntryPoint = "getbyname", CharSet = CharSet.Ansi, SetLastError = true)]
         private static extern int getbyname(int pint, string pname, StringBuilder pvalue);
 
-        [DllImport(DLL_NAME, EntryPoint = "getbyindex", CharSet = CharSet.Ansi)]
+        [DllImport(DLL_NAME, EntryPoint = "getbyindex", CharSet = CharSet.Ansi, SetLastError = true)]
         private static extern int getbyindex(int pint, int pindex, StringBuilder pvalue);
 
-        [DllImport(DLL_NAME, EntryPoint = "getmessage", CharSet = CharSet.Ansi)]
+        [DllImport(DLL_NAME, EntryPoint = "getmessage", CharSet = CharSet.Ansi, SetLastError = true)]
         private static extern int getmessage(int pint, StringBuilder msg);
 
-        [DllImport(DLL_NAME, EntryPoint = "getexception", CharSet = CharSet.Ansi)]
+        [DllImport(DLL_NAME, EntryPoint = "getexception", CharSet = CharSet.Ansi, SetLastError = true)]
         private static extern int getexception(int pint, StringBuilder msg);
 
-        [DllImport(DLL_NAME, EntryPoint = "destoryinterface", CharSet = CharSet.Ansi)]
+        [DllImport(DLL_NAME, EntryPoint = "destoryinterface", CharSet = CharSet.Ansi, SetLastError = true)]
         private static extern void destoryinterface(int pint);
 
-        [DllImport(DLL_NAME, EntryPoint = "firstrow", CharSet = CharSet.Ansi)]
+        [DllImport(DLL_NAME, EntryPoint = "firstrow", CharSet = CharSet.Ansi, SetLastError = true)]
         private static extern int firstrow(int pint);
 
-        [DllImport(DLL_NAME, EntryPoint = "nextrow", CharSet = CharSet.Ansi)]
+        [DllImport(DLL_NAME, EntryPoint = "nextrow", CharSet = CharSet.Ansi, SetLastError = true)]
         private static extern int nextrow(int pint);
 
-        [DllImport(DLL_NAME, EntryPoint = "prevrow", CharSet = CharSet.Ansi)]
+        [DllImport(DLL_NAME, EntryPoint = "prevrow", CharSet = CharSet.Ansi, SetLastError = true)]
         private static extern int prevrow(int pint);
 
 
-        [DllImport(DLL_NAME, EntryPoint = "lastrow", CharSet = CharSet.Ansi)]
+        [DllImport(DLL_NAME, EntryPoint = "lastrow", CharSet = CharSet.Ansi, SetLastError = true)]
         private static extern int lastrow(int pint);
 
-        [DllImport(DLL_NAME, EntryPoint = "setresultset", CharSet = CharSet.Ansi)]
+        [DllImport(DLL_NAME, EntryPoint = "setresultset", CharSet = CharSet.Ansi, SetLastError = true)]
         private static extern int setresultset(int pint, string result_name);
 
 
-        [DllImport(DLL_NAME, EntryPoint = "set_ic_commport", CharSet = CharSet.Ansi)]
+        [DllImport(DLL_NAME, EntryPoint = "set_ic_commport", CharSet = CharSet.Ansi, SetLastError = true)]
         private static extern long set_ic_commport(int pint, string comm);
 
         #endregion
@@ -111,7 +111,7 @@ namespace MMYBWebService.Web.Util
         private static string GetErrorMessage(int pint)
         {
             StringBuilder msg = CreateOutParam();
-            getexception(pint, msg);
+            getmessage(pint, msg);
             return msg.ToString();
         }
 
@@ -240,8 +240,7 @@ namespace MMYBWebService.Web.Util
         private static int Login()
         {
             int pint = newinterface();
-            int ret = init(pint,config.Server, config.Port, config.Servle);
-            ret = setdebug(pint, 1, "d:\\");
+            int ret = init(pint, config.Server, config.Port, config.Servle);
             string msg = "";
 
             if (pint <= 0)
