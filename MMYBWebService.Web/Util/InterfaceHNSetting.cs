@@ -7,7 +7,7 @@ namespace MMYBWebService.Web.Util
 {
     public record InterfaceHNSetting
     {
-        public long Port { get; init; }
+        public int Port { get; init; }
         public string Server { get; init; }
         public string Servle { get; init; }
         public string CenterId { get; init; }

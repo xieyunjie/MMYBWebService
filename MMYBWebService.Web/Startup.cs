@@ -107,7 +107,7 @@ namespace MMYBWebService.Web
                 HospitalName = section.GetSection("hosp_name").Value.ToString(),
                 HospitalId_pwd = section.GetSection("hosp_pwd").Value.ToString(),
                 Server = section.GetSection("server").Value.ToString(),
-                Port = Convert.ToInt64(section.GetSection("port").Value.ToString()),
+                Port = Convert.ToInt32(section.GetSection("port").Value.ToString()),
                 Servle = section.GetSection("servlet").Value.ToString(),
                 StaffId = section.GetSection("staff_id").Value.ToString(),
                 StaffId_pwd = section.GetSection("staff_pwd").Value.ToString(),

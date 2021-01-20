@@ -40,63 +40,64 @@ namespace MMYBWebService.Web.Util
 
         #region DLLImport
 
-        [DllImport("InterfaceHN.dll")]
-        private static extern long newinterface();
+        const string DLL_NAME = @"InterfaceHN.dll";
+
+        [DllImport(DLL_NAME, EntryPoint = "newinterface", CharSet = CharSet.Ansi)]
+        private static extern int newinterface();
 
 
-        [DllImport("InterfaceHN.dll")]
-        private static extern long init(long pint, string addr, long port, string servlet);
+        [DllImport(DLL_NAME, EntryPoint = "init", CharSet = CharSet.Ansi)]
+        private static extern int init(int pint, string addr, int port, string servlet);
 
-        [DllImport("InterfaceHN.dll")]
-        private static extern long newinterfacewithinit(string addr, long port, string servlet);
+        [DllImport(DLL_NAME, EntryPoint = "newinterfacewithinit", CharSet = CharSet.Ansi)]
+        private static extern int newinterfacewithinit(string addr, int port, string servlet);
 
-        [DllImport("InterfaceHN.dll")]
-        private static extern long start(long pint, string id);
+        [DllImport(DLL_NAME, EntryPoint = "start", CharSet = CharSet.Ansi)]
+        private static extern int start(int pint, string id);
 
-        [DllImport("InterfaceHN.dll")]
-        private static extern long put(long pint, long row, string pname, string pvalue);
+        [DllImport(DLL_NAME, EntryPoint = "put", CharSet = CharSet.Ansi)]
+        private static extern int put(int pint, int row, string pname, string pvalue);
 
-        [DllImport("InterfaceHN.dll")]
-        private static extern long run(long pint);
+        [DllImport(DLL_NAME, EntryPoint = "run", CharSet = CharSet.Ansi)]
+        private static extern int run(int pint);
 
-        [DllImport("InterfaceHN.dll")]
-        private static extern long setdebug(long pint, int flag, string in_direct);
+        [DllImport(DLL_NAME, EntryPoint = "setdebug", CharSet = CharSet.Ansi)]
+        private static extern int setdebug(int pint, int flag, string in_direct);
 
-        [DllImport("InterfaceHN.dll")]
-        private static extern int getbyname(long pint, string pname, StringBuilder pvalue);
+        [DllImport(DLL_NAME, EntryPoint = "getbyname", CharSet = CharSet.Ansi)]
+        private static extern int getbyname(int pint, string pname, StringBuilder pvalue);
 
-        [DllImport("InterfaceHN.dll")]
-        private static extern int getbyindex(long pint, long pindex, StringBuilder pvalue);
+        [DllImport(DLL_NAME, EntryPoint = "getbyindex", CharSet = CharSet.Ansi)]
+        private static extern int getbyindex(int pint, int pindex, StringBuilder pvalue);
 
-        [DllImport("InterfaceHN.dll")]
-        private static extern long getmessage(long pint, StringBuilder msg);
+        [DllImport(DLL_NAME, EntryPoint = "getmessage", CharSet = CharSet.Ansi)]
+        private static extern int getmessage(int pint, StringBuilder msg);
 
+        [DllImport(DLL_NAME, EntryPoint = "getexception", CharSet = CharSet.Ansi)]
+        private static extern int getexception(int pint, StringBuilder msg);
 
-        [DllImport("InterfaceHN.dll")]
-        private static extern long getexception(long pint, StringBuilder msg);
+        [DllImport(DLL_NAME, EntryPoint = "destoryinterface", CharSet = CharSet.Ansi)]
+        private static extern void destoryinterface(int pint);
 
-        [DllImport("InterfaceHN.dll")]
-        private static extern void destoryinterface(long pint);
+        [DllImport(DLL_NAME, EntryPoint = "firstrow", CharSet = CharSet.Ansi)]
+        private static extern int firstrow(int pint);
 
-        [DllImport("InterfaceHN.dll")]
-        private static extern int firstrow(long pint);
+        [DllImport(DLL_NAME, EntryPoint = "nextrow", CharSet = CharSet.Ansi)]
+        private static extern int nextrow(int pint);
 
-        [DllImport("InterfaceHN.dll")]
-        private static extern int nextrow(long pint);
-
-        [DllImport("InterfaceHN.dll")]
-        private static extern int prevrow(long pint);
-
-
-        [DllImport("InterfaceHN.dll")]
-        private static extern int lastrow(long pint);
-
-        [DllImport("InterfaceHN.dll")]
-        private static extern int setresultset(long pint, string result_name);
+        [DllImport(DLL_NAME, EntryPoint = "prevrow", CharSet = CharSet.Ansi)]
+        private static extern int prevrow(int pint);
 
 
-        [DllImport("InterfaceHN.dll")]
-        private static extern long set_ic_commport(long pint, string comm);
+        [DllImport(DLL_NAME, EntryPoint = "lastrow", CharSet = CharSet.Ansi)]
+        private static extern int lastrow(int pint);
+
+        [DllImport(DLL_NAME, EntryPoint = "setresultset", CharSet = CharSet.Ansi)]
+        private static extern int setresultset(int pint, string result_name);
+
+
+        [DllImport(DLL_NAME, EntryPoint = "set_ic_commport", CharSet = CharSet.Ansi)]
+        private static extern long set_ic_commport(int pint, string comm);
 
         #endregion
 
@@ -107,14 +108,14 @@ namespace MMYBWebService.Web.Util
             return new StringBuilder(size);
         }
 
-        private static string GetErrorMessage(long pint)
+        private static string GetErrorMessage(int pint)
         {
-            StringBuilder msg = CreateOutParam();
+            StringBuilder msg = CreateOutParam(10240);
             getmessage(pint, msg);
             return msg.ToString();
         }
 
-        private static long TryPutData(long pint, int row, string name, string value, string fun = "")
+        private static long TryPutData(int pint, int row, string name, string value, string fun = "")
         {
             long ret = put(pint, row, name, value);
             if (ret <= 0)
@@ -126,7 +127,7 @@ namespace MMYBWebService.Web.Util
             return ret;
         }
 
-        private static string TryGetData(long pint, string name)
+        private static string TryGetData(int pint, string name)
         {
             StringBuilder stb = CreateOutParam();
             int ret = getbyname(pint, name, stb);
@@ -139,7 +140,7 @@ namespace MMYBWebService.Web.Util
             return stb.ToString();
         }
 
-        private static long TryStart(long pint, string func)
+        private static long TryStart(int pint, string func)
         {
             long ret = start(pint, func);
             if (ret <= 0)
@@ -156,7 +157,7 @@ namespace MMYBWebService.Web.Util
             return ret;
         }
 
-        private static long TryPutData<T>(long pint, int row, T data, string fun = "") where T : class
+        private static long TryPutData<T>(int pint, int row, T data, string fun = "") where T : class
         {
             var props = typeof(T).GetProperties();
             foreach (var p in props)
@@ -176,7 +177,7 @@ namespace MMYBWebService.Web.Util
             return pint;
         }
 
-        private static T TrySetData<T>(long pint) where T : new()
+        private static T TrySetData<T>(int pint) where T : new()
         {
             T data = new T();
 
@@ -197,7 +198,7 @@ namespace MMYBWebService.Web.Util
 
         }
 
-        private static List<T> TrySetData<T>(long pint, string dsName) where T : new()
+        private static List<T> TrySetData<T>(int pint, string dsName) where T : new()
         {
             List<T> list = new List<T>();
             long ret = setresultset(pint, dsName);
@@ -224,9 +225,9 @@ namespace MMYBWebService.Web.Util
             return list;
         }
 
-        private static long TryRun(long pint, string func)
+        private static int TryRun(int pint, string func)
         {
-            long ret = run(pint);
+            int ret = run(pint);
             if (ret <= 0)
             {
                 string msg = GetErrorMessage(pint);
@@ -236,9 +237,10 @@ namespace MMYBWebService.Web.Util
             return ret;
         }
 
-        private static long Login()
+        private static int Login()
         {
-            long pint = newinterfacewithinit(config.Server, config.Port, config.Servle);
+            int pint = newinterface();
+            int ret = init(pint,config.Server, config.Port, config.Servle);
             string msg = "";
 
             if (pint <= 0)
@@ -247,14 +249,14 @@ namespace MMYBWebService.Web.Util
                 throw new InterfaceHNException($"接口{pint}newinterfacewithinit初始化失败！\r\n{msg}");
             }
 
-            if (start(pint, InterfaceHNConst.FUN_LOGIN) <= 0)
+            if (TryStart(pint, InterfaceHNConst.FUN_LOGIN) <= 0)
             {
                 msg = GetErrorMessage(pint);
                 throw new InterfaceHNException($"接口{pint}Start登录失败！\r\n{msg}");
             }
 
             TryPutData(pint, 1, "login_id", config.HospitalId, InterfaceHNConst.FUN_LOGIN);
-            TryPutData(pint, 1, "login_password", config.HospitalId_pwd, InterfaceHNConst.FUN_LOGIN);
+            TryPutData(pint, 1, "login_password", config.HospitalId, InterfaceHNConst.FUN_LOGIN);
 
             if (run(pint) <= 0)
             {
@@ -264,7 +266,7 @@ namespace MMYBWebService.Web.Util
             return pint;
         }
 
-        private static void DestoryPint(long pint)
+        private static void DestoryPint(int pint)
         {
             destoryinterface(pint);
         }
@@ -281,7 +283,7 @@ namespace MMYBWebService.Web.Util
         public static ResPersonInfo_DS GetPersonInfo(ReqPersonInfo reqPerson)
         {
             ResPersonInfo_DS ds = new ResPersonInfo_DS();
-            long pint = Login();
+            int pint = Login();
 
             TryStart(pint, InterfaceHNConst.FUN_BIZC131101);
             TryPutData<ReqPersonInfo>(pint, 1, reqPerson, InterfaceHNConst.FUN_BIZC131101);
@@ -335,7 +337,7 @@ namespace MMYBWebService.Web.Util
         {
             ResChargeFee_DS ds = new ResChargeFee_DS();
 
-            long pint = Login();
+            int pint = Login();
 
             TryStart(pint, InterfaceHNConst.FUN_BIZC131104);
 
@@ -372,7 +374,7 @@ namespace MMYBWebService.Web.Util
         {
             ResChargeFee_DS ds = new ResChargeFee_DS();
 
-            long pint = Login();
+            int pint = Login();
 
             TryStart(pint, InterfaceHNConst.FUN_BIZC131104);
             TryPutData<ReqChangeFee>(pint, 1, reqChangeFee, InterfaceHNConst.FUN_BIZC131104);

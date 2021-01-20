@@ -10,6 +10,6 @@ namespace MMYBWebService.Web.Model
         public string idcard { get; set; }
         public string hospital_id { get; set; }
         public string biz_type { get; set; }
-        //public string center_id { get; set; }
+        public string center_id { get; set; }
     }
 }
