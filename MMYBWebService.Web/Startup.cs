@@ -112,8 +112,10 @@ namespace MMYBWebService.Web
                 StaffId = section.GetSection("staff_id").Value.ToString(),
                 StaffId_pwd = section.GetSection("staff_pwd").Value.ToString(),
 
-
+                SetDebug = section.GetSection("set_debug").Value.ToString() == "1" ? 1 : 0,
+                LogPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, section.GetSection("log_path").Value.ToString())
             };
+
 
             InterfaceHNUtil.config = config;
         }

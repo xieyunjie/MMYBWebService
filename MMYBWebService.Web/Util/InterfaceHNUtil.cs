@@ -240,7 +240,7 @@ namespace MMYBWebService.Web.Util
         private static int Login(int pint)
         {
             int ret = init(pint, config.Server, config.Port, config.Servle);
-            setdebug(pint, 1, "d:\\");
+            //setdebug(pint, 1, "d:\\");
             string msg = "";
 
             if (pint <= 0)
@@ -270,6 +270,12 @@ namespace MMYBWebService.Web.Util
         {
             destoryinterface(pint);
         }
+        private static int TryInit()
+        {
+            int pint = newinterface();
+            setdebug(pint, config.SetDebug, config.LogPath);
+            return pint;
+        }
 
         #endregion
 
@@ -283,7 +289,7 @@ namespace MMYBWebService.Web.Util
         public static ResPersonInfo_DS GetPersonInfo(ReqPersonInfo reqPerson)
         {
             ResPersonInfo_DS ds = new ResPersonInfo_DS();
-            int pint = newinterface();
+            int pint = TryInit();
             try
             {
 
@@ -348,7 +354,7 @@ namespace MMYBWebService.Web.Util
         public static ResChargeFee_DS ChargeFee(ReqChargeFee reqChargeFee)
         {
             ResChargeFee_DS ds = new ResChargeFee_DS();
-            int pint = newinterface();
+            int pint = TryInit();
             try
             {
                 Login(pint);
@@ -397,7 +403,7 @@ namespace MMYBWebService.Web.Util
         public static ResChargeFee_DS ChangeFee(ReqChangeFee reqChangeFee)
         {
             ResChargeFee_DS ds = new ResChargeFee_DS();
-            int pint = newinterface();
+            int pint = TryInit();
             try
             {
                 Login(pint);

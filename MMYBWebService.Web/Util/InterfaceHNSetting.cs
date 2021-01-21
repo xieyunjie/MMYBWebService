@@ -17,5 +17,7 @@ namespace MMYBWebService.Web.Util
         public string HospitalId_pwd { get; init; }
         public string StaffId { get; init; }
         public string StaffId_pwd { get; init; }
+        public int SetDebug { get; init; }
+        public string LogPath { get; init; }
     }
 }
