@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace MMYBWebService.WS.Model
+{
+    public class InterfaceHNException : Exception
+    {
+        public InterfaceHNException(string msg) : base(msg)
+        {
+
+        }
+    }
+}
+
