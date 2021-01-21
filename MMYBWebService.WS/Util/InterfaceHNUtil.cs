@@ -257,12 +257,12 @@ namespace MMYBWebService.WS.Util
 
             TryPutData(pint, 1, "login_id", config.HospitalId, InterfaceHNConst.FUN_LOGIN);
             TryPutData(pint, 1, "login_password", config.HospitalId, InterfaceHNConst.FUN_LOGIN);
-
-            if (run(pint) <= 0)
-            {
-                msg = GetErrorMessage(pint);
-                throw new InterfaceHNException($"接口{pint}Run登录失败！\r\n{msg.ToString()}");
-            }
+            TryRun(pint, InterfaceHNConst.FUN_LOGIN);
+            //if (run(pint) <= 0)
+            //{
+            //    msg = GetErrorMessage(pint);
+            //    throw new InterfaceHNException($"接口{pint}Run登录失败！\r\n{msg.ToString()}");
+            //}
             return pint;
         }
 

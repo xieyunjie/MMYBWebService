@@ -21,8 +21,7 @@ namespace MMYBWebService.WS.Areas.Api.Controllers
         public JsonResult GetPersonInfo()
         {
             try
-            {
-
+            { 
                 ReqPersonInfo req = GetReqObj<ReqPersonInfo>(this.HttpContext.Request.InputStream);
                 var validator = new ReqPersonInfoValidator();
                 string validInfo = CommonUtil.Validate(req, validator);

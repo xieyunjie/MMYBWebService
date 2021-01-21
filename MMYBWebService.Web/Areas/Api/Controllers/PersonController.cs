@@ -17,7 +17,7 @@ namespace MMYBWebService.Web.Areas.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult GetPersionInfo([FromBody] ReqPersonInfo req)
+        public IActionResult GetPersonInfo([FromBody] ReqPersonInfo req)
         {
             var validator = new ReqPersonInfoValidator();
             string validInfo = CommonUtil.Validate(req, validator);  
