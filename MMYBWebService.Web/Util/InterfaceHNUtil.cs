@@ -46,57 +46,57 @@ namespace MMYBWebService.Web.Util
         private static extern int newinterface();
 
 
-        [DllImport(DLL_NAME, EntryPoint = "init", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport(DLL_NAME, EntryPoint = "init", CharSet = CharSet.Ansi)]
         private static extern int init(int pint, string addr, int port, string servlet);
 
-        [DllImport(DLL_NAME, EntryPoint = "newinterfacewithinit", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport(DLL_NAME, EntryPoint = "newinterfacewithinit", CharSet = CharSet.Ansi)]
         private static extern int newinterfacewithinit(string addr, int port, string servlet);
 
-        [DllImport(DLL_NAME, EntryPoint = "start", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport(DLL_NAME, EntryPoint = "start", CharSet = CharSet.Ansi)]
         private static extern int start(int pint, string id);
 
-        [DllImport(DLL_NAME, EntryPoint = "put", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport(DLL_NAME, EntryPoint = "put", CharSet = CharSet.Ansi)]
         private static extern int put(int pint, int row, string pname, string pvalue);
 
-        [DllImport(DLL_NAME, EntryPoint = "run", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport(DLL_NAME, EntryPoint = "run", CharSet = CharSet.Ansi)]
         private static extern int run(int pint);
 
-        [DllImport(DLL_NAME, EntryPoint = "setdebug", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport(DLL_NAME, EntryPoint = "setdebug", CharSet = CharSet.Ansi)]
         private static extern int setdebug(int pint, int flag, string in_direct);
 
-        [DllImport(DLL_NAME, EntryPoint = "getbyname", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport(DLL_NAME, EntryPoint = "getbyname", CharSet = CharSet.Ansi)]
         private static extern int getbyname(int pint, string pname, StringBuilder pvalue);
 
-        [DllImport(DLL_NAME, EntryPoint = "getbyindex", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport(DLL_NAME, EntryPoint = "getbyindex", CharSet = CharSet.Ansi)]
         private static extern int getbyindex(int pint, int pindex, StringBuilder pvalue);
 
-        [DllImport(DLL_NAME, EntryPoint = "getmessage", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport(DLL_NAME, EntryPoint = "getmessage", CharSet = CharSet.Ansi)]
         private static extern int getmessage(int pint, StringBuilder msg);
 
-        [DllImport(DLL_NAME, EntryPoint = "getexception", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport(DLL_NAME, EntryPoint = "getexception", CharSet = CharSet.Ansi)]
         private static extern int getexception(int pint, StringBuilder msg);
 
-        [DllImport(DLL_NAME, EntryPoint = "destoryinterface", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport(DLL_NAME, EntryPoint = "destoryinterface", CharSet = CharSet.Ansi)]
         private static extern void destoryinterface(int pint);
 
-        [DllImport(DLL_NAME, EntryPoint = "firstrow", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport(DLL_NAME, EntryPoint = "firstrow", CharSet = CharSet.Ansi)]
         private static extern int firstrow(int pint);
 
-        [DllImport(DLL_NAME, EntryPoint = "nextrow", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport(DLL_NAME, EntryPoint = "nextrow", CharSet = CharSet.Ansi)]
         private static extern int nextrow(int pint);
 
-        [DllImport(DLL_NAME, EntryPoint = "prevrow", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport(DLL_NAME, EntryPoint = "prevrow", CharSet = CharSet.Ansi)]
         private static extern int prevrow(int pint);
 
 
-        [DllImport(DLL_NAME, EntryPoint = "lastrow", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport(DLL_NAME, EntryPoint = "lastrow", CharSet = CharSet.Ansi)]
         private static extern int lastrow(int pint);
 
-        [DllImport(DLL_NAME, EntryPoint = "setresultset", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport(DLL_NAME, EntryPoint = "setresultset", CharSet = CharSet.Ansi)]
         private static extern int setresultset(int pint, string result_name);
 
 
-        [DllImport(DLL_NAME, EntryPoint = "set_ic_commport", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport(DLL_NAME, EntryPoint = "set_ic_commport", CharSet = CharSet.Ansi)]
         private static extern long set_ic_commport(int pint, string comm);
 
         #endregion
@@ -237,10 +237,10 @@ namespace MMYBWebService.Web.Util
             return ret;
         }
 
-        private static int Login()
+        private static int Login(int pint)
         {
-            int pint = newinterface();
             int ret = init(pint, config.Server, config.Port, config.Servle);
+            setdebug(pint, 1, "d:\\");
             string msg = "";
 
             if (pint <= 0)
@@ -283,48 +283,60 @@ namespace MMYBWebService.Web.Util
         public static ResPersonInfo_DS GetPersonInfo(ReqPersonInfo reqPerson)
         {
             ResPersonInfo_DS ds = new ResPersonInfo_DS();
-            int pint = Login();
-
-            TryStart(pint, InterfaceHNConst.FUN_BIZC131101);
-            TryPutData<ReqPersonInfo>(pint, 1, reqPerson, InterfaceHNConst.FUN_BIZC131101);
-
-            long ret = TryRun(pint, InterfaceHNConst.FUN_BIZC131101);
-
-            List<ResPersonInfo> personList = TrySetData<ResPersonInfo>(pint, InterfaceHNConst.DS_PERSONINFO);
-
-            // 多个PersonInfo，只返回PersonInfo数据
-            if (personList.Count == 1)
+            int pint = newinterface();
+            try
             {
-                ResPersonInfo personInfo = TrySetData<ResPersonInfo>(pint);
-                ds.PersonInfoList.Add(personInfo);
 
-                List<ResSpInfo> spList = TrySetData<ResSpInfo>(pint, InterfaceHNConst.DS_SPINFO);
-                ds.SpInfoList = spList;
+                Login(pint);
 
-                List<ResElseInfo> elseList = TrySetData<ResElseInfo>(pint, InterfaceHNConst.DS_ELSEINFO);
-                ds.ElseInfoList = elseList;
+                TryStart(pint, InterfaceHNConst.FUN_BIZC131101);
+                TryPutData<ReqPersonInfo>(pint, 1, reqPerson, InterfaceHNConst.FUN_BIZC131101);
 
-                List<ResLastBizInfo> lastBizList = TrySetData<ResLastBizInfo>(pint, InterfaceHNConst.DS_LASTBIZINFO);
-                ds.LastBizInfoList = lastBizList;
+                long ret = TryRun(pint, InterfaceHNConst.FUN_BIZC131101);
 
-                List<ResFreezeInfo> freezeList = TrySetData<ResFreezeInfo>(pint, InterfaceHNConst.DS_FREEZEINFO);
-                ds.FreezeInfoList = freezeList;
+                List<ResPersonInfo> personList = TrySetData<ResPersonInfo>(pint, InterfaceHNConst.DS_PERSONINFO);
 
-                List<ResTotalBizInfo> totalbizList = TrySetData<ResTotalBizInfo>(pint, InterfaceHNConst.DS_TOTALBIZINFO);
-                ds.TotalBizInfoList = totalbizList;
+                // 多个PersonInfo，只返回PersonInfo数据
+                if (personList.Count == 1)
+                {
+                    ResPersonInfo personInfo = TrySetData<ResPersonInfo>(pint);
+                    ds.PersonInfoList.Add(personInfo);
+
+                    List<ResSpInfo> spList = TrySetData<ResSpInfo>(pint, InterfaceHNConst.DS_SPINFO);
+                    ds.SpInfoList = spList;
+
+                    List<ResElseInfo> elseList = TrySetData<ResElseInfo>(pint, InterfaceHNConst.DS_ELSEINFO);
+                    ds.ElseInfoList = elseList;
+
+                    List<ResLastBizInfo> lastBizList = TrySetData<ResLastBizInfo>(pint, InterfaceHNConst.DS_LASTBIZINFO);
+                    ds.LastBizInfoList = lastBizList;
+
+                    List<ResFreezeInfo> freezeList = TrySetData<ResFreezeInfo>(pint, InterfaceHNConst.DS_FREEZEINFO);
+                    ds.FreezeInfoList = freezeList;
+
+                    List<ResTotalBizInfo> totalbizList = TrySetData<ResTotalBizInfo>(pint, InterfaceHNConst.DS_TOTALBIZINFO);
+                    ds.TotalBizInfoList = totalbizList;
+                }
+                //else if (ret <= -1)
+                //{
+                //    StringBuilder msg = new StringBuilder(1024);
+
+                //    getmessage(pint, msg);
+                //    throw new InterfaceHNException($"接口执行失败-run！{ InterfaceHNConst.FUN_BIZC131101}！\r\n{msg.ToString()}");
+                //}
+
+
+
+                return ds;
             }
-            //else if (ret <= -1)
-            //{
-            //    StringBuilder msg = new StringBuilder(1024);
-
-            //    getmessage(pint, msg);
-            //    throw new InterfaceHNException($"接口执行失败-run！{ InterfaceHNConst.FUN_BIZC131101}！\r\n{msg.ToString()}");
-            //}
-
-            DestoryPint(pint);
-
-            return ds;
-
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                DestoryPint(pint);
+            }
 
         }
 
@@ -336,33 +348,45 @@ namespace MMYBWebService.Web.Util
         public static ResChargeFee_DS ChargeFee(ReqChargeFee reqChargeFee)
         {
             ResChargeFee_DS ds = new ResChargeFee_DS();
-
-            int pint = Login();
-
-            TryStart(pint, InterfaceHNConst.FUN_BIZC131104);
-
-            TryPutData<ReqChargeFee>(pint, 1, reqChargeFee, InterfaceHNConst.FUN_BIZC131104);
-            long ret = setresultset(pint, InterfaceHNConst.DS_FEEINFO);
-            int row = 1;
-            foreach (var item in reqChargeFee.feeinfo)
+            int pint = newinterface();
+            try
             {
-                TryPutData<ReqChargeFeeDetail>(pint, row, item, InterfaceHNConst.FUN_BIZC131104);
-                row++;
+                Login(pint);
+
+                TryStart(pint, InterfaceHNConst.FUN_BIZC131104);
+
+                TryPutData<ReqChargeFee>(pint, 1, reqChargeFee, InterfaceHNConst.FUN_BIZC131104);
+                long ret = setresultset(pint, InterfaceHNConst.DS_FEEINFO);
+                int row = 1;
+                foreach (var item in reqChargeFee.feeinfo)
+                {
+                    TryPutData<ReqChargeFeeDetail>(pint, row, item, InterfaceHNConst.FUN_BIZC131104);
+                    row++;
+                }
+
+                ret = TryRun(pint, InterfaceHNConst.FUN_BIZC131104);
+
+                List<ResBizInfo> bizInfoList = TrySetData<ResBizInfo>(pint, InterfaceHNConst.DS_BIZINFO);
+                ds.BizInfoList = bizInfoList;
+
+                List<ResPayInfo> payInfoList = TrySetData<ResPayInfo>(pint, InterfaceHNConst.DS_PAYINFO);
+                ds.PayInfoList = payInfoList;
+
+                List<ResDetailPay> detailPayList = TrySetData<ResDetailPay>(pint, InterfaceHNConst.DS_DETAILPAY);
+                ds.DetailPayList = detailPayList;
+
+
+                return ds;
             }
+            catch (Exception)
+            {
 
-            ret = TryRun(pint, InterfaceHNConst.FUN_BIZC131104);
-
-            List<ResBizInfo> bizInfoList = TrySetData<ResBizInfo>(pint, InterfaceHNConst.DS_BIZINFO);
-            ds.BizInfoList = bizInfoList;
-
-            List<ResPayInfo> payInfoList = TrySetData<ResPayInfo>(pint, InterfaceHNConst.DS_PAYINFO);
-            ds.PayInfoList = payInfoList;
-
-            List<ResDetailPay> detailPayList = TrySetData<ResDetailPay>(pint, InterfaceHNConst.DS_DETAILPAY);
-            ds.DetailPayList = detailPayList;
-
-            DestoryPint(pint);
-            return ds;
+                throw;
+            }
+            finally
+            {
+                DestoryPint(pint);
+            }
         }
 
         /// <summary>
@@ -373,33 +397,44 @@ namespace MMYBWebService.Web.Util
         public static ResChargeFee_DS ChangeFee(ReqChangeFee reqChangeFee)
         {
             ResChargeFee_DS ds = new ResChargeFee_DS();
-
-            int pint = Login();
-
-            TryStart(pint, InterfaceHNConst.FUN_BIZC131104);
-            TryPutData<ReqChangeFee>(pint, 1, reqChangeFee, InterfaceHNConst.FUN_BIZC131104);
-
-            long ret = setresultset(pint, InterfaceHNConst.DS_FEEINFO);
-            int row = 1;
-            foreach (var item in reqChangeFee.feeinfo)
+            int pint = newinterface();
+            try
             {
-                TryPutData<ReqChargeFeeDetail>(pint, row, item, InterfaceHNConst.FUN_BIZC131104);
-                row++;
+                Login(pint);
+
+                TryStart(pint, InterfaceHNConst.FUN_BIZC131104);
+                TryPutData<ReqChangeFee>(pint, 1, reqChangeFee, InterfaceHNConst.FUN_BIZC131104);
+
+                long ret = setresultset(pint, InterfaceHNConst.DS_FEEINFO);
+                int row = 1;
+                foreach (var item in reqChangeFee.feeinfo)
+                {
+                    TryPutData<ReqChargeFeeDetail>(pint, row, item, InterfaceHNConst.FUN_BIZC131104);
+                    row++;
+                }
+
+                ret = TryRun(pint, InterfaceHNConst.FUN_BIZC131104);
+
+                List<ResBizInfo> bizInfoList = TrySetData<ResBizInfo>(pint, InterfaceHNConst.DS_BIZINFO);
+                ds.BizInfoList = bizInfoList;
+
+                List<ResPayInfo> payInfoList = TrySetData<ResPayInfo>(pint, InterfaceHNConst.DS_PAYINFO);
+                ds.PayInfoList = payInfoList;
+
+                List<ResDetailPay> detailPayList = TrySetData<ResDetailPay>(pint, InterfaceHNConst.DS_DETAILPAY);
+                ds.DetailPayList = detailPayList;
+
+                return ds;
             }
+            catch (Exception)
+            {
 
-            ret = TryRun(pint, InterfaceHNConst.FUN_BIZC131104);
-
-            List<ResBizInfo> bizInfoList = TrySetData<ResBizInfo>(pint, InterfaceHNConst.DS_BIZINFO);
-            ds.BizInfoList = bizInfoList;
-
-            List<ResPayInfo> payInfoList = TrySetData<ResPayInfo>(pint, InterfaceHNConst.DS_PAYINFO);
-            ds.PayInfoList = payInfoList;
-
-            List<ResDetailPay> detailPayList = TrySetData<ResDetailPay>(pint, InterfaceHNConst.DS_DETAILPAY);
-            ds.DetailPayList = detailPayList;
-
-            DestoryPint(pint);
-            return ds;
+                throw;
+            }
+            finally
+            {
+                DestoryPint(pint);
+            }
         }
 
         #endregion
