@@ -16,15 +16,19 @@ namespace MMYBWebService.WS
         public string msg { get; set; }
         public int page { get; set; }
         public int size { get; set; }
-        public int total { get; set; } 
+        public int total { get; set; }
     }
 
     public class JsonResultEx : JsonResult
     {
-        private RetData _ret;
+        public RetData Ret
+        {
+            get;
+            private set;
+        }
         public JsonResultEx(RetData ret)
         {
-            _ret = ret;
+            Ret = ret;
         }
         public override void ExecuteResult(ControllerContext context)
         {
@@ -38,7 +42,7 @@ namespace MMYBWebService.WS
             {
                 response.ContentEncoding = ContentEncoding;
             }
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(_ret);
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(Ret);
             response.Write(json);
         }
     }

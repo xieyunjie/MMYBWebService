@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MMYBWebService.WS.Miscellaneous;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Web.Mvc;
 
 namespace MMYBWebService.WS.Areas.Api.Controllers
 {
+    [ApiActionFilter]
     public abstract class ApiBaseController : Controller
     {
         // GET: Api/ApiBase
